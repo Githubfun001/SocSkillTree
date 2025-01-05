@@ -31,21 +31,46 @@ def scrape_table(html_content: str, index: int) -> list[list[str]]:
 
 
 def skill_dependencies(data: list[list[str]]) -> dict:
-    dependencies = {}
+    # Tworzymy 4 różne słowniki, jeden dla każdego przedziału poziomów
+    dependencies_0_4 = {}
+    dependencies_5_9 = {}
+    dependencies_8_16_24 = {}
+    dependencies_10_99 = {}
+
+    # Ostatni zakres do którego przypisaliśmy dane (początkowo None)
+    current_range = None
 
     for row in data[1:]:
-        skill, required, _ = row
+        skill, required, level_range = row
 
-        if not required:  # Jeśli pole 'required' jest puste
-            dependencies[skill] = []
+        # Określamy zakres poziomów (trzecia kolumna)
+        if '0-4' in level_range:
+            target_dict = dependencies_0_4
+        elif '5-9' in level_range:
+            target_dict = dependencies_5_9
+        elif '8, 16, 24' in level_range:
+            target_dict = dependencies_8_16_24
+        elif '10-99' in level_range:
+            target_dict = dependencies_10_99
         else:
-            # Krok 1: Użyj funkcji process_skills, aby przetworzyć wymagania
+            continue  # Jeśli zakres nie pasuje, pomijamy dany wiersz
+
+        # Krok 1: Użyj funkcji process_skills, aby przetworzyć wymagania
+        if required:
             requirements = process_skills(required)
+            requirements = remove_level_1(requirements)
+        else:
+            requirements = []
 
-            # Dodaj wymagania do słownika
-            dependencies[skill] = requirements
+        # Dodajemy wymagania do odpowiedniego słownika
+        target_dict[skill] = requirements
 
-    return dependencies
+    return {
+        "0-4": dependencies_0_4,
+        "5-9": dependencies_5_9,
+        "8, 16, 24": dependencies_8_16_24,
+        "10-99": dependencies_10_99
+    }
 
 def process_skills(input_text: str) -> list[str]:
     # Krok 1: Usuń wszystkie spacje
@@ -58,6 +83,10 @@ def process_skills(input_text: str) -> list[str]:
     skills = input_text.split(",")
 
     return skills
+
+def remove_level_1(skills: list[str]) -> list[str]:
+    # Usuwanie (1) z umiejętności, ale zachowanie (2) i (3)
+    return [re.sub(r"\(1\)", "", skill) if "(1)" in skill else skill for skill in skills]
 
 def main():
     url = 'https://soc.th.gl/wielders/Cecilia'
