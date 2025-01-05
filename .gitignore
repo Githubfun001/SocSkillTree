@@ -1,0 +1,46 @@
+# Ignoruj katalogi wirtualnego środowiska Python
+venv/
+env/
+
+# Ignoruj pliki kompilacji Pythona
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+
+# Ignoruj pliki logów i danych sesji
+*.log
+*.sqlite3
+
+# Ignoruj pliki specyficzne dla systemów operacyjnych
+.DS_Store
+Thumbs.db
+
+# Ignoruj pliki konfiguracyjne IDE/editora
+.idea/
+.vscode/
+*.swp
+
+# Ignoruj pliki danych (jeśli generowane w projekcie)
+*.csv
+*.json
+*.xlsx
+*.dat
+
+# Ignoruj pliki wynikowe z wizualizacji
+*.png
+*.svg
+*.pdf
+
+# Ignoruj pliki Graphviz (jeśli używasz)
+*.gv
+*.dot
+
+# Ignoruj pliki tymczasowe
+*.tmp
+*.bak
+*.temp
+
+# Ignoruj inne pliki wygenerowane dynamicznie
+output/
+debug/
